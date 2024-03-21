@@ -83,6 +83,13 @@ jobs:
     needs:
       - build-helm-package
     steps:
+      # Only Checking Out .github Folder
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+          sparse-checkout-cone-mode: false
+
       - uses: actions/download-artifact@v4
         with:
           name: gitversion.env
@@ -109,13 +116,6 @@ jobs:
             -showcerts </dev/null \
           | openssl x509 \
             -outform pem > ${{ github.workspace }}/.github/certs/registry.docker.com/registry.crt
-
-      # Only Checking Out .github Folder
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            .github
-          sparse-checkout-cone-mode: false
 
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1
