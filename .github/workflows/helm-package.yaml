@@ -177,7 +177,7 @@ jobs:
         run: |
           set -e
 
-          mkdir -p results/Logs
+          mkdir -p results/logs
 
           # Get Details and Events
           kubectl describe all > results/describe.yaml
