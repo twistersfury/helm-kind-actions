@@ -121,3 +121,41 @@ jobs:
         uses: helm/kind-action@v1
         with:
           config: ${{ github.workspace }}/.github/kind-config.yaml
+
+      - name: Wait for and Configure Cluster
+        run: |
+          set -e
+
+          kubectl cluster-info
+          kubectl get nodes
+
+          # Waiting For Cluster (30 Iterations)
+          for i in $(seq 1 30); do
+            if kubectl get nodes | grep NotReady &> /dev/null; then
+              echo "KinD not Ready. Sleeping for 2s..."
+              sleep 2s
+            else
+              echo "KinD Ready. Continuing build..."
+              break
+            fi
+          done
+
+          # Final Confirmation (In Case Loop Fails)
+          if kubectl get nodes | grep NotReady &> /dev/null; then
+            echo "KinD not Ready"
+            exit 1
+          fi
+
+          kubectl get namespace
+          kubectl config set-context --current --namespace default
+
+          # Create Secret For Downloading From GHCR
+          kubectl create secret docker-registry ghcr-login-secret \
+            --docker-server=https://ghcr.io \
+            --docker-password=${{ secrets.GITHUB_TOKEN }} \
+            --docker-username=${{ secrets.DOCKER_USERNAME }}
+
+          # Apply Additional Configurations, If Required
+          if [ -n "$K8S_APPLY" ]; then
+            echo "$K8S_APPLY" | kubectl apply -f -
+          fi
