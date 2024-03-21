@@ -35,7 +35,7 @@ jobs:
           echo "GitVersion_Patch=$GitVersion_Patch" >> gitversion.env
           echo "GitVersion_MajorMinorPatch=$GitVersion_MajorMinorPatch" >> gitversion.env
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: gitversion.env
           path: gitversion.env
@@ -65,7 +65,7 @@ jobs:
       - name: Build Templates
         run: helm template helm . > helm.template.yaml
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: helm.template.yaml
           path: helm.template.yaml
@@ -73,7 +73,7 @@ jobs:
       - name: Package Helm
         run: helm package . --version $GitVersion_FullSemVer
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: helm-kind-actions-${{ env.GitVersion_FullSemVer }}.tgz
           path: helm-kind-actions-${{ env.GitVersion_FullSemVer }}.tgz
