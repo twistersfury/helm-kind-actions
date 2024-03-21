@@ -184,10 +184,10 @@ jobs:
           kubectl describe all --namespace="kube-system" > results/describe.system.yaml
 
           # Download Logs
-          kubectl get pod --no-headers -o custom-columns=":metadata,name" | xargs -I {} sh -c 'kubectl logs "$1" --all-containers=true > "results/logs/$1.log" || :' -- {}
+          kubectl get pod --no-headers -o custom-columns=":metadata.name" | xargs -I {} sh -c 'kubectl logs "$1" --all-containers=true > "results/logs/$1.log" || :' -- {}
 
           # Download Previous Logs
-          kubectl get pod --no-headers -o custom-columns=":metadata,name" | xargs -I {} sh -c 'kubectl logs "$1" --previous --all-containers=true > "results/logs/$1.previous.log" || :' -- {}
+          kubectl get pod --no-headers -o custom-columns=":metadata.name" | xargs -I {} sh -c 'kubectl logs "$1" --previous --all-containers=true > "results/logs/$1.previous.log" || :' -- {}
 
       - uses: actions/upload-artifact@v4
         if: failure()
