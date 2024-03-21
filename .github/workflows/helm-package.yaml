@@ -104,7 +104,7 @@ jobs:
 
           mkdir -p ${{ github.workspace }}/.github/certs/registry.docker.com
 
-          openssi s_client \
+          openssl s_client \
             -connect registry.docker.com:443 \
             -showcents </dev/null \
           | openssl x509 \
