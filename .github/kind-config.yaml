@@ -1,4 +1,4 @@
-apiVersion: kind.x-k8s.10/w1alpha4
+apiVersion: kind.x-k8s.io/v1alpha4
 kind: Cluster
 networking:
   apiServerAddress: '0.0.0.0'
