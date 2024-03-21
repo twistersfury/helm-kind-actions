@@ -90,7 +90,7 @@ jobs:
       - name: Load Variables
         run: cat gitversion.env >> $GITHUB_ENV
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: helm-kind-actions-${{ env.GitVersion_FullSemVer }}.tgz
 
