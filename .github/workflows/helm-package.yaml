@@ -75,5 +75,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: package
+          name: helm-kind-actions-${{ env.GitVersion_FullSemVer }}.tgz
           path: helm-kind-actions-${{ env.GitVersion_FullSemVer }}.tgz
