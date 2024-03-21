@@ -1,0 +1,12 @@
+{{- with .Values.redis }}
+Redis:
+  Node Port: {{ ternary "Disabled" .nodePort (eq (.nodePort | toString) "false") }}
+  Probes: {{ ternary "Disabled" "Enabled" .disableProbes }}
+{{- end }}
+
+{{- with .Values.redisCommander }}
+Redis Commander:
+  Enabled: {{ ternary "Enabled" "Disabled" .enabled }}
+  Node Port: {{ ternary "Disabled" .nodePort (eq (.nodePort | toString) "false") }}
+  Probes: {{ ternary "Disabled" "Enabled" .disableProbes }}
+{{- end }}

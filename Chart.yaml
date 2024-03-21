@@ -1,0 +1,9 @@
+apiVersion: v2
+name: helm-kind-actions
+description: Testing Helm Chart In GitHub Actions
+
+type: application
+
+version: 0.1.0
+
+appVersion: "0.1.0"

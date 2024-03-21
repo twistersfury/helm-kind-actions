@@ -1,0 +1,55 @@
+{{- if .Values.redisCommander.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    tf.service: redis-commander
+  name: {{ include "helm.fullname" . }}-redis-commander
+{{- with .Values.redisCommander }}
+spec:
+  selector:
+    matchLabels:
+      tf.service: redis-commander
+  template:
+    metadata:
+      labels:
+        {{ include "helm.labels" $ | nindent 8 }}
+        tf.service: redis-commander
+    spec:
+      containers:
+        - env:
+            - name: REDIS_HOST
+              value: '{{ include "helm.fullname" $  }}-redis'
+            - name: REDIS_PASSWORD
+              value: ''
+            - name: FOLDING_CHAR
+              value: '.'
+          image: {{ include "helm.image" (dict "image" .image "Chart" $.Chart) }}
+        {{- if not .disableProbes }}
+          livenessProbe:
+            httpGet:
+              port: redis-commander
+            initialDelaySeconds: 30
+            periodSeconds: 10
+        {{- end }}
+          name: redis-commander
+          ports:
+            - name: redis-commander
+              containerPort: 8081
+              protocol: TCP
+        {{- if not .disableProbes }}
+          startupProbe:
+            httpGet:
+              port: redis-commander
+            failureThreshold: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              port: redis-commander
+            initialDelaySeconds: 30
+            periodSeconds: 10
+        {{- end }}
+      initContainers:
+        {{ include "helm.initContainer.redis" $ | nindent 8 }}
+{{- end }}
+{{- end }}

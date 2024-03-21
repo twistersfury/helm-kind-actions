@@ -1,0 +1,24 @@
+{{- if .Values.redisCommander.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "helm.fullname" . }}-redis-commander
+  labels:
+    tf.service: redis-commander
+{{- with .Values.redisCommander }}
+spec:
+  ports:
+    - port: 80
+  {{- if .nodePort }}
+      nodePort: {{ .nodePort }}
+  {{- end }}
+      targetPort: redis-commander
+      protocol: TCP
+      name: redis-commander
+  selector:
+    tf.service: redis-commander
+  {{- if .nodePort }}
+  type: NodePort
+  {{- end }}
+{{- end }}
+{{- end }}

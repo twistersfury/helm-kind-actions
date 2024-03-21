@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm.fullname" $ }}-redis
+  labels:
+    {{- include "helm.labels" $ | nindent 4 }}
+
+{{- with .Values.redis }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tf.deployment: redis
+  template:
+    metadata:
+      labels:
+        {{- include "helm.labels" $ | nindent 8 }}
+        tf.deployment: redis
+    spec:
+      containers:
+        - image: {{ include "helm.image" (dict "image" .image "Chart" $.Chart) }}
+          name: redis
+  {{- if not .disableProbes }}
+          livenessProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 2
+            tcpSocket:
+              port: redis
+  {{- end }}
+          ports:
+            - containerPort: 6379
+              name: redis
+  {{- if not .disableProbes }}
+          readinessProbe:
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 2
+            tcpSocket:
+              port: redis
+          startupProbe:
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 2
+            tcpSocket:
+              port: redis
+  {{- end }}
+{{- end }}

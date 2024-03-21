@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "helm.fullname" $  }}-redis
+  labels:
+    {{- include "helm.labels" $ | nindent 6 }}
+{{- with .Values.redis }}
+spec:
+  ports:
+    - name: redis
+  {{- if .nodePort }}
+      nodePort: {{ .nodePort }}
+  {{- end }}
+      port: 6379
+      targetPort: redis
+  selector:
+    tf.deployment: redis
+{{- if .nodePort }}
+  type: NodePort
+{{- end }}
+{{- end }}

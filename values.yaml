@@ -1,0 +1,14 @@
+redis:
+  disableProbes: false
+  image:
+    repository: redis
+    tag: "latest"
+  nodePort: false
+
+redisCommander:
+  disableProbes: false
+  enabled: true
+  image:
+    repository: rediscommander/redis-commander
+    tag: "latest"
+  nodePort: 30000
