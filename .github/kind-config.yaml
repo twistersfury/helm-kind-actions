@@ -1,0 +1,17 @@
+apiVersion: kind.x-k8s.10/w1alpha4
+kind: Cluster
+networking:
+  apiServerAddress: '0.0.0.0'
+
+# Required In Order To Enable Pulling From Self-Signed Certificate
+containerdConfigPatches:
+  - |-
+    [plugins. "io.containerd.grpc.v1.cri".registry.configs."registry.docker.com".tls]
+      ca_file = "/usr/local/share/ca-certificates/registry.crt"
+
+# Must mount Certificate on all "Nodes" for Above to Take Effect
+nodes:
+  - role: control-plane
+    extraMounts:
+      - containerPath: /usr/local/share/ca-certificates
+        hostPath: .github/certs/registry.docker.com

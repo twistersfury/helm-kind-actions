@@ -110,4 +110,7 @@ jobs:
           | openssl x509 \
             -outform pem > ${{ github.workspace }}/.github/certs/registry.docker.com/registry.crt
 
-
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1
+        with:
+          config: ${{ github.workspace }}/.github/kind-config.yaml
