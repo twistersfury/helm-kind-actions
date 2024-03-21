@@ -165,6 +165,8 @@ jobs:
         run: |
           set -e
 
+          ls -al
+
           helm install helm ./helm-kind-actions-${{ env.GitVersion_FullSemVer }}.tgz \
             --wait \
             --timeout=30s \
