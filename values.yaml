@@ -4,11 +4,12 @@ redis:
     repository: redis
     tag: "latest"
   nodePort: false
+  secret: redis
 
 redisCommander:
   disableProbes: false
   enabled: true
   image:
-    repository: rediscommander/redis-commander
+    repository: ghcr.io/joeferner/redis-commander
     tag: "latest"
   nodePort: 30000

@@ -18,16 +18,20 @@ spec:
     spec:
       containers:
         - env:
-            - name: REDIS_HOST
-              value: '{{ include "helm.fullname" $  }}-redis'
-            - name: REDIS_PASSWORD
-              value: ''
             - name: FOLDING_CHAR
               value: '.'
+            - name: REDIS_HOST
+              value: '{{ include "helm.fullname" $  }}-redis'
+            - name: REDIS_OPTIONAL # Forcing Exit on Failure
+              value: 'true'
+          envFrom:
+            - secretRef:
+                name: {{ $.Values.redis.secret }}
           image: {{ include "helm.image" (dict "image" .image "Chart" $.Chart) }}
         {{- if not .disableProbes }}
           livenessProbe:
             httpGet:
+              path: /favicon.png
               port: redis-commander
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -38,15 +42,17 @@ spec:
               containerPort: 8081
               protocol: TCP
         {{- if not .disableProbes }}
-          startupProbe:
-            httpGet:
-              port: redis-commander
-            failureThreshold: 30
-            periodSeconds: 10
           readinessProbe:
             httpGet:
+              path: /favicon.png
               port: redis-commander
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /favicon.png
+              port: redis-commander
+            failureThreshold: 30
             periodSeconds: 10
         {{- end }}
       initContainers:

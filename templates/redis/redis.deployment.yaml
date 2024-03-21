@@ -18,7 +18,13 @@ spec:
         tf.deployment: redis
     spec:
       containers:
-        - image: {{ include "helm.image" (dict "image" .image "Chart" $.Chart) }}
+        - args:
+            - --requirepass
+            - $(REDIS_PASSWORD)
+          envFrom:
+            - secretRef:
+                name: {{ .secret }}
+          image: {{ include "helm.image" (dict "image" .image "Chart" $.Chart) }}
           name: redis
   {{- if not .disableProbes }}
           livenessProbe:

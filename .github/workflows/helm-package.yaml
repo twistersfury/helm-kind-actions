@@ -123,6 +123,8 @@ jobs:
           config: ${{ github.workspace }}/.github/kind-config.yaml
 
       - name: Wait for and Configure Cluster
+        env:
+          K8S_APPLY: ${{ secrets.K8S_APPLY }}
         run: |
           set -e
 
@@ -159,3 +161,11 @@ jobs:
           if [ -n "$K8S_APPLY" ]; then
             echo "$K8S_APPLY" | kubectl apply -f -
           fi
+      - name: Run Charts
+        run: |
+          set -e
+
+          helm install helm helm-kind-actions-$(GitVersion_FullSemVer}.tgz \
+            --wait \
+            --timeout=30s \
+            --set imagePullSecrets[0].name=ghcr-login-secret
