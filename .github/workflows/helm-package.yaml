@@ -1,0 +1,41 @@
+name: Build and Test Repo
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-semantic-version:
+    runs-on: ubuntu-latest
+    container:
+      image: gittools/gitversion
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run GitVersion
+        run: /tools/dotnet-gitversion /output buildserver
+
+      - name: Saving Environment Variables
+        run: |
+          echo "GitVersion_LegacySemVer=$GitVersion_LegacySemVer" >> gitversion.env
+          echo "GitVersion_SemVer=$GitVersion_SemVer" >> gitversion.env
+          echo "GitVersion_FullSemVer=$GitVersion_FullSemVer" >> gitversion.env
+          echo "GitVersion_Major=$GitVersion_Minor" >> gitversion.env
+          echo "GitVersion_Patch=$GitVersion_Patch" >> gitversion.env
+          echo "GitVersion_MajorMinorPatch=$GitVersion_MajorMinorPatch" >> gitversion.env
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: helm-charts
+          path: gitversion.env
