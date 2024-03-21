@@ -169,7 +169,7 @@ jobs:
 
           helm install helm ./helm-kind-actions-${{ env.GitVersion_FullSemVer }}.tgz \
             --wait \
-            --timeout=30s \
+            --timeout=120s \
             --set imagePullSecrets[0].name=ghcr-login-secret
 
       - name: Log Results
