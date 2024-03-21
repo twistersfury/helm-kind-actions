@@ -106,7 +106,7 @@ jobs:
 
           openssl s_client \
             -connect registry.docker.com:443 \
-            -showcents </dev/null \
+            -showcerts </dev/null \
           | openssl x509 \
             -outform pem > ${{ github.workspace }}/.github/certs/registry.docker.com/registry.crt
 
