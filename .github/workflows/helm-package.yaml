@@ -165,7 +165,7 @@ jobs:
         run: |
           set -e
 
-          helm install helm helm-kind-actions-$(GitVersion_FullSemVer}.tgz \
+          helm install helm helm-kind-actions-${GitVersion_FullSemVer}.tgz \
             --wait \
             --timeout=30s \
             --set imagePullSecrets[0].name=ghcr-login-secret
